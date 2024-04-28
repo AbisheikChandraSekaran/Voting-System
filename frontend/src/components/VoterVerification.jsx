@@ -1,11 +1,12 @@
-// VoterVerification.jsx
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styles from './VoterVerification.module.css'; // Import the CSS module for styling
+import backgroundImage from '/src/assets/government.png'; // Import your background image
 
 const VoterVerification = () => {
   const navigate = useNavigate();
   const [verificationResult, setVerificationResult] = useState('');
+  const [verificationComplete, setVerificationComplete] = useState(false);
   const videoRef = useRef(null);
   const intervalRef = useRef(null);
 
@@ -45,7 +46,6 @@ const VoterVerification = () => {
   const sendSnapshot = async () => {
     try {
       const imageData = takeSnapshot();
-      console.log(imageData);
       if (!imageData) return;
 
       const formData = new FormData();
@@ -63,7 +63,6 @@ const VoterVerification = () => {
     }
   };
 
-  // Function to convert base64 to Blob
   const dataURItoBlob = (dataURI) => {
     const byteString = atob(dataURI.split(',')[1]);
     const ab = new ArrayBuffer(byteString.length);
@@ -77,23 +76,35 @@ const VoterVerification = () => {
   const displayResult = (result) => {
     if (result.length > 0 && result[0]._label !== 'unknown') {
       setVerificationResult('Verification Successful');
-      // Traverse to VoterDashboard page upon successful verification
       navigate('/voter');
+      setVerificationComplete(true); // Set verification complete to true
     } else {
       setVerificationResult('Verification Failed');
     }
   };
 
   useEffect(() => {
-    intervalRef.current = setInterval(sendSnapshot, 30000);
-    return () => clearInterval(intervalRef.current);
-  }, []);
+    if (!verificationComplete) { 
+      intervalRef.current = setInterval(sendSnapshot, 30000);
+    } else { 
+      clearInterval(intervalRef.current);
+      if (videoRef.current.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+    }
+  }, [verificationComplete]);
 
   return (
-    <div>
-      <h1>Voter Verification</h1>
-      <video ref={videoRef} autoPlay></video>
-      <p>{verificationResult}</p>
+    <div className={styles.container}>
+      <div className={styles.leftPanel}>
+        <img src={backgroundImage} alt="Background" className={styles.backgroundImage} />
+      </div>
+      <div className={styles.rightPanel}>
+        <h1 className={styles.heading}>Voter Verification</h1>
+        <video ref={videoRef} autoPlay className={styles.video}></video>
+        <p className={styles.result}>{verificationResult}</p>
+      </div>
     </div>
   );
 };

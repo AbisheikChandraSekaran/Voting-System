@@ -1,12 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Homepage.module.css';
+import { TypeAnimation } from 'react-type-animation';
 
 const Homepage = () => {
   return (
     <div className={styles.homepageContainer}>
       <div className={styles.content}>
-        <h1 className={styles.heading}>Voting System</h1>
+        <h1 className={styles.heading}>
+        <TypeAnimation
+  sequence={[
+    'Voting System',
+    1000,
+    'Voting is our responsibility',
+    1000,
+    'Voting System',
+    1000,
+  ]}
+  speed={50}
+  repeat={Infinity}
+/>
+        </h1>
         <p className={styles.subtext}>Please select your role to continue.</p>
         <div className={styles.buttonsContainer}>
           <div className={styles.buttonRow}>
