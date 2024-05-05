@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const VoterDashboard = ({ isCameraStarted }) => {
+const VoterDashboard = () => {
     
 
     return (
