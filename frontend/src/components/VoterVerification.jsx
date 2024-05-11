@@ -70,6 +70,7 @@ const VoterVerification = () => {
 
   const displayResult = (result) => {
     if (result.length > 0 && result[0]._label !== 'unknown') {
+      console.log(`Detected face: ${result[0]._label}`)
       setResult(`Detected face: ${result[0]._label}`);
       stopCamera();
       navigate('/voter');

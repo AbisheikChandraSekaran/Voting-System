@@ -57,6 +57,7 @@ const EnrollButton = styled(Button)(({ theme }) => ({
 const EnrollVoterForm = () => {
   const [name, setName] = useState('');
   const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(false); // State variable to track loading state
   const videoRef = useRef();
 
   useEffect(() => {
@@ -88,6 +89,7 @@ const EnrollVoterForm = () => {
 
   const handleEnroll = async () => {
     try {
+      setLoading(true); // Set loading state to true
       const formData = new FormData();
       formData.append('label', name); // Use the name field as the label
       photos.forEach((photo, index) => {
@@ -100,8 +102,10 @@ const EnrollVoterForm = () => {
       });
   
       // Handle response...
+      setLoading(false); // Set loading state to false after successful enrollment
     } catch (error) {
       console.error('Error enrolling voter:', error);
+      setLoading(false); // Set loading state to false if there's an error
     }
   };
   
@@ -154,8 +158,8 @@ const EnrollVoterForm = () => {
           </Grid>
         </Box>
         <Box mt={2}>
-          <EnrollButton variant="contained" color="primary" onClick={handleEnroll} startIcon={<PhotoCameraIcon />}>
-            Enroll Voter
+          <EnrollButton variant="contained" color="primary" onClick={handleEnroll} startIcon={<PhotoCameraIcon />} disabled={loading}>
+            {loading ? 'Enrolling...' : 'Enroll Voter'}
           </EnrollButton>
         </Box>
       </Box>

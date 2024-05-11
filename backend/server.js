@@ -125,3 +125,133 @@ app.post("/check-face", async (req, res) => {
   res.json({ result });
 
 });
+
+
+// Define MongoDB schema for party enrollment
+const partySchema = new mongoose.Schema({
+  partyName: {
+    type: String,
+    required: true,
+  },
+  partyLeader: {
+    type: String,
+    required: true,
+  },
+  partySymbol: {
+    type: String,
+    required: true,
+  },
+});
+
+// Create a model for party enrollment
+const PartyModel = mongoose.model("Party", partySchema);
+
+// Route to handle party enrollment
+app.post("/enroll-party", async (req, res) => {
+  try {
+    const { partyName, partyLeader, partySymbol } = req.body;
+
+    // Create a new party enrollment document
+    const newParty = new PartyModel({
+      partyName,
+      partyLeader,
+      partySymbol,
+    });
+
+    // Save the new party enrollment document to the database
+    await newParty.save();
+
+    res.json({ message: "Party enrolled successfully" });
+  } catch (error) {
+    console.error("Error enrolling party:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+app.get('/parties', async (req, res) => {
+  try {
+    const parties = await PartyModel.find();
+    res.json({ parties });
+  } catch (error) {
+    console.error('Error fetching parties:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Edit party details
+app.put('/parties/:id', async (req, res) => {
+  const { id } = req.params;
+  const { partyName, partyLeader, partySymbol } = req.body;
+  try {
+    const updatedParty = await PartyModel.findByIdAndUpdate(id, { partyName, partyLeader, partySymbol }, { new: true });
+    res.json({ party: updatedParty });
+  } catch (error) {
+    console.error('Error updating party:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Delete party
+app.delete("/parties/:partyId", async (req, res) => {
+  const partyId = req.params.partyId;
+  try {
+    // Find the party by ID and delete it from the database
+    await PartyModel.findByIdAndDelete(partyId);
+    res.status(200).json({ message: "Party deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting party:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// PUT endpoint to update a party by ID
+app.put("/parties/:partyId", async (req, res) => {
+  const partyId = req.params.partyId;
+  const { partyName, partyLeader, partySymbol } = req.body;
+
+  try {
+    // Find the party by ID and update its details
+    const updatedParty = await PartyModel.findByIdAndUpdate(partyId, {
+      partyName,
+      partyLeader,
+      partySymbol
+    }, { new: true }); // Set { new: true } to return the updated party document
+
+    if (updatedParty) {
+      res.status(200).json({ message: "Party updated successfully", party: updatedParty });
+    } else {
+      res.status(404).json({ message: "Party not found" });
+    }
+  } catch (error) {
+    console.error("Error updating party:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Route to fetch voters
+app.get('/voters', async (req, res) => {
+  try {
+    const voters = await FaceModel.find();
+    res.json({ voters });
+  } catch (error) {
+    console.error('Error fetching voters:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Route to delete a voter
+app.delete("/voters/:voterId", async (req, res) => {
+  const voterId = req.params.voterId;
+  try {
+    // Find the voter by ID and delete it from the database
+    await FaceModel.findByIdAndDelete(voterId);
+    res.status(200).json({ message: "Voter deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting voter:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+module.exports = app;

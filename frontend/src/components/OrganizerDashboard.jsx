@@ -1,5 +1,6 @@
+// OrganizerDashboard.js
 import React, { useState } from 'react';
-import { styled, ThemeProvider, createTheme, useTheme } from '@mui/material/styles';
+import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -18,7 +19,10 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'; 
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted'; 
-import EnrollVoterForm from './EnrollVoterForm'; // Import EnrollVoterForm component
+import EnrollVoterForm from './EnrollVoterForm'; 
+import EnrollPartyForm from './EnrollPartyForm'; 
+import ViewPartyPage from './ViewPartyPage'; 
+import ViewVoterPage from './ViewVoterPage'; 
 
 const drawerWidth = 240;
 
@@ -75,22 +79,23 @@ const StyledListItemIcon = styled(ListItemIcon)(({ theme }) => ({
   color: theme.palette.primary.main,
 }));
 
-// Define custom theme
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#ff9933', // Orange color
+      main: '#ff9933',
     },
     secondary: {
-      main: '#138808', // Green color for hover
+      main: '#138808',
     },
   },
 });
 
 export default function OrganizerDashboard() {
-  
   const [open, setOpen] = useState(false);
   const [showEnrollVoterForm, setShowEnrollVoterForm] = useState(false);
+  const [showEnrollPartyForm, setShowEnrollPartyForm] = useState(false);
+  const [showViewPartyPage, setShowViewPartyPage] = useState(false);
+  const [showViewVotersPage, setShowViewVotersPage] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -102,10 +107,39 @@ export default function OrganizerDashboard() {
 
   const handleEnrollVoterClick = () => {
     setShowEnrollVoterForm(true);
+    setShowEnrollPartyForm(false);
+    setShowViewPartyPage(false);
+    setShowViewVotersPage(false)
+  };
+
+  const handleEnrollPartyClick = () => {
+    setShowEnrollPartyForm(true);
+    setShowEnrollVoterForm(false);
+    setShowViewPartyPage(false);
+    setShowViewVotersPage(false)
+  };
+
+  const handleViewPartyClick = () => {
+    setShowViewPartyPage(true);
+    setShowEnrollVoterForm(false);
+    setShowEnrollPartyForm(false);
+    setShowViewVotersPage(false);
+  };
+
+  const handleViewVotersClick = () => {
+    setShowViewVotersPage(true)
+    setShowViewPartyPage(false);
+    setShowEnrollVoterForm(false);
+    setShowEnrollPartyForm(false);
+  };
+
+  const handleCloseEnrollForms = () => {
+    setShowEnrollVoterForm(false);
+    setShowEnrollPartyForm(false);
   };
 
   return (
-    <ThemeProvider theme={theme}> {/* Apply custom theme */}
+    <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="fixed" open={open}>
@@ -119,7 +153,7 @@ export default function OrganizerDashboard() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div" color={'white'}>
+            <Typography variant="h6" noWrap component="div" color="white">
               Organizer Dashboard
             </Typography>
           </Toolbar>
@@ -144,8 +178,7 @@ export default function OrganizerDashboard() {
   </DrawerHeader>
   <Divider />
   <StyledList>
-    <ListItemButton
-      onClick={handleEnrollVoterClick}
+    <ListItemButton onClick={handleEnrollVoterClick}
       sx={{
         '&:hover': {
           backgroundColor: theme.palette.secondary.main, // Green background on hover
@@ -164,7 +197,7 @@ export default function OrganizerDashboard() {
       </StyledListItemIcon>
       <ListItemText primary="Enroll Voter" />
     </ListItemButton>
-    <ListItemButton
+    <ListItemButton onClick={handleEnrollPartyClick}
       sx={{
         '&:hover': {
           backgroundColor: theme.palette.secondary.main, // Green background on hover
@@ -183,7 +216,7 @@ export default function OrganizerDashboard() {
       </StyledListItemIcon>
       <ListItemText primary="Enroll Party" />
     </ListItemButton>
-    <ListItemButton
+    <ListItemButton onClick={handleViewVotersClick}
       sx={{
         '&:hover': {
           backgroundColor: theme.palette.secondary.main, // Green background on hover
@@ -202,7 +235,7 @@ export default function OrganizerDashboard() {
       </StyledListItemIcon>
       <ListItemText primary="View Voters" />
     </ListItemButton>
-    <ListItemButton
+    <ListItemButton onClick={handleViewPartyClick}
       sx={{
         '&:hover': {
           backgroundColor: theme.palette.secondary.main, // Green background on hover
@@ -226,10 +259,11 @@ export default function OrganizerDashboard() {
 
         <Main open={open}>
           <DrawerHeader />
-          <Typography paragraph>
-            Welcome to the Organizer Dashboard. Here you can enroll voters and parties for the upcoming election.
-          </Typography>
-          {showEnrollVoterForm && <EnrollVoterForm />}
+          <Typography paragraph>Welcome to the Organizer Dashboard. Here you can enroll voters and parties for the upcoming election.</Typography>
+          {showEnrollVoterForm && <EnrollVoterForm onClose={handleCloseEnrollForms} />}
+          {showEnrollPartyForm && <EnrollPartyForm onClose={handleCloseEnrollForms} />}
+          {showViewPartyPage && <ViewPartyPage />}
+          {showViewVotersPage && <ViewVoterPage />}
         </Main>
       </Box>
     </ThemeProvider>
