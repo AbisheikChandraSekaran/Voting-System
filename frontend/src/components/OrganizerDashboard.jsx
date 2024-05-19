@@ -1,4 +1,3 @@
-// OrganizerDashboard.js
 import React, { useState } from 'react';
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -6,7 +5,6 @@ import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -23,6 +21,11 @@ import EnrollVoterForm from './EnrollVoterForm';
 import EnrollPartyForm from './EnrollPartyForm'; 
 import ViewPartyPage from './ViewPartyPage'; 
 import ViewVoterPage from './ViewVoterPage'; 
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import List from '@mui/material/List';
+
 
 const drawerWidth = 240;
 
@@ -92,10 +95,7 @@ const theme = createTheme({
 
 export default function OrganizerDashboard() {
   const [open, setOpen] = useState(false);
-  const [showEnrollVoterForm, setShowEnrollVoterForm] = useState(false);
-  const [showEnrollPartyForm, setShowEnrollPartyForm] = useState(false);
-  const [showViewPartyPage, setShowViewPartyPage] = useState(false);
-  const [showViewVotersPage, setShowViewVotersPage] = useState(false);
+  const [selectedView, setSelectedView] = useState(null);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -105,42 +105,19 @@ export default function OrganizerDashboard() {
     setOpen(false);
   };
 
-  const handleEnrollVoterClick = () => {
-    setShowEnrollVoterForm(true);
-    setShowEnrollPartyForm(false);
-    setShowViewPartyPage(false);
-    setShowViewVotersPage(false)
+  const handleMenuItemClick = (view) => {
+    setSelectedView(view);
+    setOpen(false); // Close the drawer when an item is clicked
   };
 
-  const handleEnrollPartyClick = () => {
-    setShowEnrollPartyForm(true);
-    setShowEnrollVoterForm(false);
-    setShowViewPartyPage(false);
-    setShowViewVotersPage(false)
-  };
-
-  const handleViewPartyClick = () => {
-    setShowViewPartyPage(true);
-    setShowEnrollVoterForm(false);
-    setShowEnrollPartyForm(false);
-    setShowViewVotersPage(false);
-  };
-
-  const handleViewVotersClick = () => {
-    setShowViewVotersPage(true)
-    setShowViewPartyPage(false);
-    setShowEnrollVoterForm(false);
-    setShowEnrollPartyForm(false);
-  };
-
-  const handleCloseEnrollForms = () => {
-    setShowEnrollVoterForm(false);
-    setShowEnrollPartyForm(false);
+  const handleCardClick = (view) => {
+    setSelectedView(view);
+    setOpen(false);
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('src/assets/pngegg (10).png')`,  backgroundSize: 'contain', backgroundPosition: 'center',}}>
         <CssBaseline />
         <AppBar position="fixed" open={open}>
           <Toolbar>
@@ -159,111 +136,136 @@ export default function OrganizerDashboard() {
           </Toolbar>
         </AppBar>
         <Drawer
-  sx={{
-    width: drawerWidth,
-    flexShrink: 0,
-    '& .MuiDrawer-paper': {
-      width: drawerWidth,
-      boxSizing: 'border-box',
-    },
-  }}
-  variant="persistent"
-  anchor="left"
-  open={open}
->
-  <DrawerHeader>
-    <IconButton onClick={handleDrawerClose} color='white'>
-      {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-    </IconButton>
-  </DrawerHeader>
-  <Divider />
-  <StyledList>
-    <ListItemButton onClick={handleEnrollVoterClick}
-      sx={{
-        '&:hover': {
-          backgroundColor: theme.palette.secondary.main, // Green background on hover
-          color: 'white', // White text color on hover
-        },
-      }}
-    >
-      <StyledListItemIcon>
-        <PersonAddIcon 
-        sx={{
-          '&:hover': {
-            backgroundColor: theme.palette.secondary.main, // Green background on hover
-            color: 'white', // White text color on hover
-          },
-        }}/>
-      </StyledListItemIcon>
-      <ListItemText primary="Enroll Voter" />
-    </ListItemButton>
-    <ListItemButton onClick={handleEnrollPartyClick}
-      sx={{
-        '&:hover': {
-          backgroundColor: theme.palette.secondary.main, // Green background on hover
-          color: 'white', // White text color on hover
-        },
-      }}
-    >
-      <StyledListItemIcon>
-        <GroupAddIcon 
-        sx={{
-          '&:hover': {
-            backgroundColor: theme.palette.secondary.main, // Green background on hover
-            color: 'white', // White text color on hover
-          },
-        }}/>
-      </StyledListItemIcon>
-      <ListItemText primary="Enroll Party" />
-    </ListItemButton>
-    <ListItemButton onClick={handleViewVotersClick}
-      sx={{
-        '&:hover': {
-          backgroundColor: theme.palette.secondary.main, // Green background on hover
-          color: 'white', // White text color on hover
-        },
-      }}
-    >
-      <StyledListItemIcon>
-        <PeopleAltIcon 
-        sx={{
-          '&:hover': {
-            backgroundColor: theme.palette.secondary.main, // Green background on hover
-            color: 'white', // White text color on hover
-          },
-        }}/>
-      </StyledListItemIcon>
-      <ListItemText primary="View Voters" />
-    </ListItemButton>
-    <ListItemButton onClick={handleViewPartyClick}
-      sx={{
-        '&:hover': {
-          backgroundColor: theme.palette.secondary.main, // Green background on hover
-          color: 'white', // White text color on hover
-        },
-      }}
-    >
-      <StyledListItemIcon>
-        <FormatListBulletedIcon 
-        sx={{
-          '&:hover': {
-            backgroundColor: theme.palette.secondary.main, // Green background on hover
-            color: 'white', // White text color on hover
-          },
-        }}/>
-      </StyledListItemIcon>
-      <ListItemText primary="View Parties" />
-    </ListItemButton>
-  </StyledList>
-</Drawer>
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={open}
+        >
+          <DrawerHeader>
+            <IconButton onClick={handleDrawerClose} color='white'>
+              <ChevronLeftIcon />
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          <StyledList>
+            <ListItemButton onClick={() => handleMenuItemClick('enrollVoter')} sx={{
+                '&:hover': {
+                  backgroundColor: '#138808',
+                  color: 'white',
+                },
+              }}>
+              <StyledListItemIcon>
+                <PersonAddIcon />
+              </StyledListItemIcon>
+              <ListItemText primary="Enroll Voter" />
+            </ListItemButton>
+            <ListItemButton onClick={() => handleMenuItemClick('enrollParty')} sx={{
+                '&:hover': {
+                  backgroundColor: '#138808',
+                  color: 'white',
+                },
+              }}>
+              <StyledListItemIcon>
+                <GroupAddIcon />
+              </StyledListItemIcon>
+              <ListItemText primary="Enroll Party" />
+            </ListItemButton>
+            <ListItemButton onClick={() => handleMenuItemClick('viewVoters')} sx={{
+                '&:hover': {
+                  backgroundColor: '#138808',
+                  color: 'white',
+                },
+              }}>
+              <StyledListItemIcon>
+                <PeopleAltIcon />
+              </StyledListItemIcon>
+              <ListItemText primary="View Voters" />
+            </ListItemButton>
+            <ListItemButton onClick={() => handleMenuItemClick('viewParties')} sx={{
+                '&:hover': {
+                  backgroundColor: '#138808',
+                  color: 'white',
+                },
+              }}>
+              <StyledListItemIcon>
+                <FormatListBulletedIcon />
+              </StyledListItemIcon>
+              <ListItemText primary="View Parties" />
+            </ListItemButton>
+          </StyledList>
+        </Drawer>
 
         <Main open={open}>
-          <DrawerHeader />
-          <Typography paragraph>Welcome to the Organizer Dashboard. Here you can enroll voters and parties for the upcoming election.</Typography>
-          {showEnrollVoterForm && <EnrollVoterForm onClose={handleCloseEnrollForms} />}
-          {showEnrollPartyForm && <EnrollPartyForm onClose={handleCloseEnrollForms} />}
-          {showViewPartyPage && <ViewPartyPage />}
-          {showViewVotersPage && <ViewVoterPage />}
+        <DrawerHeader />
+  {selectedView === null && (
+    <>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around',marginLeft: 10,marginRight: 10}}>
+        <Card sx={{  marginTop: 3,marginLeft:20, backgroundColor: '#138808', width: '25%', borderRadius: 5 }} onClick={() => handleCardClick('enrollVoter')}>
+          <CardMedia
+            component="img"
+            sx={{ height: 180, width: '55%', objectFit: 'cover',marginLeft: 10,marginTop: 2 }}
+            image="src/assets/pngegg (6).png" // Provide the path to your image
+            alt="Enroll Voter"
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div" color="white">
+              Enroll Voter
+            </Typography>
+          </CardContent>
+        </Card>
+        <Card sx={{ marginTop: 3,marginLeft:20,marginRight:20, backgroundColor: '#138808', width: '25%', borderRadius: 5 }} onClick={() => handleCardClick('enrollParty')}>
+          <CardMedia
+            component="img"
+            sx={{ height: 180, width: '60%', objectFit: 'cover',marginLeft: 8.5,marginTop: 2 }}
+            image="src/assets/pngegg (9).png" // Provide the path to your image
+            alt="Enroll Party"
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div" color="white">
+              Enroll Party
+            </Typography>
+          </CardContent>
+        </Card>
+        <Card sx={{ marginTop: 5,marginLeft:20, backgroundColor: '#138808', width: '25%', borderRadius: 5 }} onClick={() => handleCardClick('viewVoters')}>
+          <CardMedia
+            component="img"
+            sx={{ height: 180, width: '60%', objectFit: 'cover',marginLeft: 7,marginTop: 2 }}
+            image="src/assets/pngegg (7).png" // Provide the path to your image
+            alt="View Voters"
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div" color="white">
+              View Voters
+            </Typography>
+          </CardContent>
+        </Card>
+        <Card sx={{ marginTop: 5,marginLeft:20,marginRight:20, backgroundColor: '#138808', width: '25%', borderRadius: 5 }} onClick={() => handleCardClick('viewParties')}>
+          <CardMedia
+            component="img"
+            sx={{ height: 180, width: '55%', objectFit: 'cover',marginLeft: 9,marginTop: 2 }}
+            image="src/assets/pngegg (4).png" // Provide the path to your image
+            alt="View Parties"
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div" color="white">
+              View Parties
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+    </>
+  )}
+          {selectedView === 'enrollVoter' && <EnrollVoterForm />}
+          {selectedView === 'enrollParty' && <EnrollPartyForm />}
+          {selectedView === 'viewVoters' && <ViewVoterPage />}
+          {selectedView === 'viewParties' && <ViewPartyPage />}
         </Main>
       </Box>
     </ThemeProvider>

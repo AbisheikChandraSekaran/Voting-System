@@ -29,8 +29,13 @@ const Homepage = () => {
             </Link>
           </div>
           <div className={styles.buttonRow}>
-            <Link to="/organizer" className={styles.buttonLink}>
+            <Link to="/login" className={styles.buttonLink}>
               <button className={styles.button}>Organizer</button>
+            </Link>
+          </div>
+          <div className={styles.buttonRow}>
+            <Link to="/result" className={styles.buttonLink}>
+              <button className={styles.button}>View Live Result</button>
             </Link>
           </div>
         </div>

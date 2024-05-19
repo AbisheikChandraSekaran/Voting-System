@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Typography, IconButton, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditPartyForm from './EditPartyForm';
 
 const ViewPartyPage = () => {
   const [parties, setParties] = useState([]);
+  const [editingParty, setEditingParty] = useState(null);
 
-  // Fetch parties from backend when component mounts
   useEffect(() => {
     fetchParties();
   }, []);
@@ -25,8 +26,8 @@ const ViewPartyPage = () => {
     }
   };
 
-  const handleEditParty = (partyId) => {
-    // Implement edit functionality
+  const handleEditParty = (party) => {
+    setEditingParty(party);
   };
 
   const handleDeleteParty = async (partyId) => {
@@ -35,7 +36,6 @@ const ViewPartyPage = () => {
         method: 'DELETE',
       });
       if (response.ok) {
-        // Remove the deleted party from the state
         setParties(parties.filter(party => party._id !== partyId));
         console.log('Party deleted successfully');
       } else {
@@ -44,6 +44,11 @@ const ViewPartyPage = () => {
     } catch (error) {
       console.error('Error deleting party:', error);
     }
+  };
+
+  const handleUpdateParty = (updatedParty) => {
+    setParties(parties.map(party => party._id === updatedParty._id ? updatedParty : party));
+    setEditingParty(null); // Close the edit form
   };
 
   return (
@@ -67,7 +72,7 @@ const ViewPartyPage = () => {
               <TableCell>{party.partyLeader}</TableCell>
               <TableCell>{party.partySymbol}</TableCell>
               <TableCell>
-              <IconButton onClick={() => handleEditParty(party._id)} style={{ color: '#FF9933' }} 
+                <IconButton onClick={() => handleEditParty(party)} style={{ color: '#FF9933' }} 
                   sx={{ '&:hover': { color: 'blue' } }}><EditIcon /></IconButton>
                 <IconButton onClick={() => handleDeleteParty(party._id)} style={{ color: '#FF9933' }} 
                   sx={{ '&:hover': { color: 'blue' } }}><DeleteIcon /></IconButton>
@@ -76,6 +81,7 @@ const ViewPartyPage = () => {
           ))}
         </TableBody>
       </Table>
+      {editingParty && <EditPartyForm party={editingParty} onUpdate={handleUpdateParty} />}
     </div>
   );
 };

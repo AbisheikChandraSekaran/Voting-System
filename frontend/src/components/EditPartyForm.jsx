@@ -1,51 +1,75 @@
-import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, TextField, Button, Typography } from '@mui/material';
 
-const EditPartyForm = ({ party, onUpdate, onClose }) => {
+const EditPartyForm = ({ party, onUpdate }) => {
   const [partyName, setPartyName] = useState(party.partyName);
   const [partyLeader, setPartyLeader] = useState(party.partyLeader);
   const [partySymbol, setPartySymbol] = useState(party.partySymbol);
 
-  const handleUpdateParty = () => {
-    onUpdate(party._id, { partyName, partyLeader, partySymbol });
-    onClose();
+  const handleUpdateParty = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/parties/${party._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          partyName,
+          partyLeader,
+          partySymbol,
+        }),
+      });
+
+      if (response.ok) {
+        const updatedParty = await response.json();
+        onUpdate(updatedParty);
+        console.log('Party updated successfully');
+      } else {
+        console.error('Failed to update party:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error updating party:', error);
+    }
   };
 
   return (
-    <Dialog open onClose={onClose}>
-      <DialogTitle>Edit Party</DialogTitle>
-      <DialogContent>
-        <TextField
-          label="Party Name"
-          value={partyName}
-          onChange={(e) => setPartyName(e.target.value)}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Party Leader"
-          value={partyLeader}
-          onChange={(e) => setPartyLeader(e.target.value)}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Party Symbol"
-          value={partySymbol}
-          onChange={(e) => setPartySymbol(e.target.value)}
-          fullWidth
-          margin="normal"
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="primary">
-          Cancel
+    <Box mt={2}>
+      <Typography variant="h5" gutterBottom>
+        Edit Party
+      </Typography>
+      <TextField
+        label="Party Name"
+        variant="outlined"
+        fullWidth
+        value={partyName}
+        onChange={(e) => setPartyName(e.target.value)}
+        margin="normal"
+        required
+      />
+      <TextField
+        label="Party Leader"
+        variant="outlined"
+        fullWidth
+        value={partyLeader}
+        onChange={(e) => setPartyLeader(e.target.value)}
+        margin="normal"
+        required
+      />
+      <TextField
+        label="Party Symbol"
+        variant="outlined"
+        fullWidth
+        value={partySymbol}
+        onChange={(e) => setPartySymbol(e.target.value)}
+        margin="normal"
+        required
+      />
+      <Box mt={2}>
+        <Button variant="contained" color="primary" onClick={handleUpdateParty}>
+          Update Party
         </Button>
-        <Button onClick={handleUpdateParty} color="primary">
-          Update
-        </Button>
-      </DialogActions>
-    </Dialog>
+      </Box>
+    </Box>
   );
 };
 
