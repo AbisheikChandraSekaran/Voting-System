@@ -6,6 +6,7 @@ import OrganizerDashboard from './components/OrganizerDashboard';
 import VoterVerification from './components/VoterVerification';
 import Result from './components/Result';
 import LoginPage from './components/LoginPage';
+import MotionIntro from './components/MotionIntro';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,7 +18,8 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route path="/" element={<MotionIntro />} />
+        <Route path="/home" element={<Homepage />} />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/voterverification" element={<VoterVerification />} />
         <Route path="/voter" element={<VoterDashboard />} />

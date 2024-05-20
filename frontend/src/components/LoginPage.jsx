@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LoginPage.module.css';
+import toast from "react-hot-toast";
 
 const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -11,6 +12,7 @@ const LoginPage = ({ onLogin }) => {
     e.preventDefault();
     // Add your authentication logic here
     if (username === 'admin' && password === 'password') {
+      toast.success("Signed In Succeessfully", { id: "login" })
       onLogin();
       navigate('/organizer');
     } else {

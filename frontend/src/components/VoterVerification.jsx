@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './VoterVerification.module.css';
-import loadingSpinner from './loading-spinner.gif'; // Import loading spinner image
-
+import loadingSpinner from './loading-spinner.gif';
 const VoterVerification = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState('');
@@ -76,6 +75,7 @@ const VoterVerification = () => {
       navigate('/voter');
     } else {
       setResult('No face detected or unknown face');
+      playAlarmSound(); 
     }
     setLoading(false); // Set loading to false when verification completes
   };
@@ -89,6 +89,17 @@ const VoterVerification = () => {
     }
     return new Blob([ab], { type: 'image/jpeg' });
   };
+
+  const playAlarmSound = () => {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    oscillator.type = 'sine'; // Type of sound (sine wave)
+    oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); // Frequency in hertz (440 Hz is the standard "A" note)
+    oscillator.connect(audioCtx.destination);
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 10); // Play sound for 1 second
+  };
+
 
   const handleDetectFaculty = (event) => {
     event.preventDefault();
